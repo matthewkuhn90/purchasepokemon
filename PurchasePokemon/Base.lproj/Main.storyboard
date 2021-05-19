@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="PurchasePokemon" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w8Y-OV-q0q">
+                                <rect key="frame" x="18" y="89" width="284" height="220"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello, Matt! You have $12.34 in Pokemon purchasing power. " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TdD-7P-nd7">
+                                        <rect key="frame" x="20" y="27" width="243" height="41"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="41" id="CpG-m2-6lq"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Which Pokemon do you wish to purchase?" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="evH-Mb-17L">
+                                        <rect key="frame" x="20" y="76" width="243" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="H9F-In-jrO"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Pokemon name or id" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="C7O-Up-2eQ">
+                                        <rect key="frame" x="20" y="120" width="243" height="34"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="34" id="e8r-i0-bhO"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="name"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JrG-zl-ySv">
+                                        <rect key="frame" x="119" y="162" width="144" height="30"/>
+                                        <color key="backgroundColor" red="0.40263905517403825" green="0.72079235406091369" blue="0.5511938150499458" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="144" id="FmC-cf-vpM"/>
+                                            <constraint firstAttribute="height" constant="30" id="b3U-1U-FQU"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                        <state key="normal" title="Review Purchase">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="onTapReviewPurchaseButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Lga-un-mgP"/>
+                                        </connections>
+                                    </button>
+                                    <view hidden="YES" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E76-iD-2ak">
+                                        <rect key="frame" x="109.5" y="77.5" width="65" height="65"/>
+                                        <subviews>
+                                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="Db1-9I-o5D">
+                                                <rect key="frame" x="14" y="14" width="37" height="37"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="37" id="OqC-Ag-7g9"/>
+                                                    <constraint firstAttribute="height" constant="37" id="Z16-02-zhz"/>
+                                                </constraints>
+                                            </activityIndicatorView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="Db1-9I-o5D" firstAttribute="centerY" secondItem="E76-iD-2ak" secondAttribute="centerY" id="BBR-6J-YvJ"/>
+                                            <constraint firstAttribute="height" constant="65" id="DJ3-pt-OOU"/>
+                                            <constraint firstAttribute="width" constant="65" id="caM-wK-sde"/>
+                                            <constraint firstItem="Db1-9I-o5D" firstAttribute="centerX" secondItem="E76-iD-2ak" secondAttribute="centerX" id="j75-f9-14C"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemTealColor"/>
+                                <constraints>
+                                    <constraint firstItem="C7O-Up-2eQ" firstAttribute="leading" secondItem="w8Y-OV-q0q" secondAttribute="leading" constant="20" symbolic="YES" id="2L6-0E-p7K"/>
+                                    <constraint firstAttribute="width" constant="284" id="9Cm-7m-iC9"/>
+                                    <constraint firstItem="evH-Mb-17L" firstAttribute="leading" secondItem="w8Y-OV-q0q" secondAttribute="leading" constant="20" symbolic="YES" id="FCX-7G-m5M"/>
+                                    <constraint firstItem="C7O-Up-2eQ" firstAttribute="top" secondItem="evH-Mb-17L" secondAttribute="bottom" constant="8" symbolic="YES" id="NZ5-0J-vT4"/>
+                                    <constraint firstAttribute="height" constant="220" id="Nrl-fI-iYR"/>
+                                    <constraint firstItem="JrG-zl-ySv" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="w8Y-OV-q0q" secondAttribute="leading" constant="20" symbolic="YES" id="OQq-y9-p8t"/>
+                                    <constraint firstAttribute="trailing" secondItem="TdD-7P-nd7" secondAttribute="trailing" constant="21" id="YOR-Tq-6dP"/>
+                                    <constraint firstItem="TdD-7P-nd7" firstAttribute="leading" secondItem="w8Y-OV-q0q" secondAttribute="leading" constant="20" symbolic="YES" id="aJS-V5-sIS"/>
+                                    <constraint firstAttribute="trailing" secondItem="JrG-zl-ySv" secondAttribute="trailing" constant="21" id="af2-fN-pr6"/>
+                                    <constraint firstItem="TdD-7P-nd7" firstAttribute="top" secondItem="w8Y-OV-q0q" secondAttribute="top" constant="27" id="gYc-vb-pVV"/>
+                                    <constraint firstItem="E76-iD-2ak" firstAttribute="centerX" secondItem="w8Y-OV-q0q" secondAttribute="centerX" id="kKR-tO-y4L"/>
+                                    <constraint firstItem="E76-iD-2ak" firstAttribute="centerY" secondItem="w8Y-OV-q0q" secondAttribute="centerY" id="lgS-xY-Q0a"/>
+                                    <constraint firstItem="JrG-zl-ySv" firstAttribute="top" secondItem="C7O-Up-2eQ" secondAttribute="bottom" constant="8" symbolic="YES" id="rzy-Xu-NUB"/>
+                                    <constraint firstAttribute="trailing" secondItem="C7O-Up-2eQ" secondAttribute="trailing" constant="21" id="uEA-2z-XRN"/>
+                                    <constraint firstAttribute="trailing" secondItem="evH-Mb-17L" secondAttribute="trailing" constant="21" id="xVN-6N-eMh"/>
+                                    <constraint firstItem="evH-Mb-17L" firstAttribute="top" secondItem="TdD-7P-nd7" secondAttribute="bottom" constant="8" symbolic="YES" id="zTP-MT-Tny"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="w8Y-OV-q0q" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="b1c-xM-ab1"/>
+                            <constraint firstItem="w8Y-OV-q0q" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="89" id="nsV-w9-eNw"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="formView" destination="w8Y-OV-q0q" id="sxf-VI-r0r"/>
+                        <outlet property="greetingLabel" destination="TdD-7P-nd7" id="4qk-Ia-ojB"/>
+                        <outlet property="inquiryLabel" destination="evH-Mb-17L" id="wqv-8g-Klx"/>
+                        <outlet property="pokemonNameTextField" destination="C7O-Up-2eQ" id="9IU-hh-ibM"/>
+                        <outlet property="reviewPurchaseButton" destination="JrG-zl-ySv" id="7ZR-zB-Zii"/>
+                        <outlet property="spinner" destination="E76-iD-2ak" id="gV9-Lo-wX3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="24.375" y="103.52112676056338"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemTealColor">
+            <color red="0.35294117647058826" green="0.78431372549019607" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
