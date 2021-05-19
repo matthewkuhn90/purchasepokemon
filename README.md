@@ -19,7 +19,7 @@ Enter a Pokemon name in the field provided and tap the "Review Purchase" button.
 
 If the Pokemon is not found, an alert will be presented informing you.
 
-If your available balance is insuffiecient, an alert will be presented informing you (and also of the cost of the Pokemon desired).
+If your available balance is insufficient, an alert will be presented informing you (and also of the cost of the Pokemon desired).
 
 If your available balance is sufficient to purchase the Pokemon, you will be
 presented with another form showing the price of your selected Pokemon and what would be your available balance after the purchase (should you decide to complete the purchase). 
