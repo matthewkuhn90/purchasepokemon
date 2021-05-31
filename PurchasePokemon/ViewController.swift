@@ -16,10 +16,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var spinner: UIView!
     
     var userRecord: UserRecord?
-    var pokemon: Pokemon?
+    var pokemon: RestPokemon?
     
     let kMaxPokemonNameOrIdLength = 32
+    
+    lazy var pokemonAPI = PokemonAPI()
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -62,8 +65,10 @@ class ViewController: UIViewController {
     @IBAction func onTapReviewPurchaseButton(_ sender: Any) {
         
         if let pokemonName = self.pokemonNameTextField.text {
+        
+            let trimmedPokemonNameOrId =  pokemonName.lowercased().components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.joined(separator: "")
             
-            let trimmedPokemonNameOrId = pokemonName.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+            print(trimmedPokemonNameOrId)
             
             if (trimmedPokemonNameOrId.count == 0) {
                 self.showErrorAlert(title: "", msg: "Enter a Pokemon name or id")
@@ -75,11 +80,64 @@ class ViewController: UIViewController {
                 return
             }
             
-            self.fetchPokemonWith(trimmedPokemonNameOrId)
             
+            self.setUIState(isEnabled: false)
+            self.setSpinnerState(isVisible: true)
+            
+            if let myBalance = self.userRecord?.balance {
+                
+                self.pokemonAPI.fetchPokemonWithNameOrId(trimmedPokemonNameOrId, currentBalance: myBalance)
+                { [weak self] (pokemonVars, myError) in
+                    
+                    DispatchQueue.main.async {
+                        
+                        self?.setSpinnerState(isVisible: false)
+                        self?.setUIState(isEnabled: true)
+                  
+                        if let thePokemonSuccessVars = pokemonVars {
+                            
+                            let storyboard = UIStoryboard(name: "ReviewPurchase", bundle: nil)
+                                
+                            if let reviewPurchaseVC = storyboard.instantiateViewController(withIdentifier: "reviewPurchaseVC") as? ReviewPurchaseViewController {
+                                
+                                reviewPurchaseVC.modalTransitionStyle = .crossDissolve
+                                reviewPurchaseVC.modalPresentationStyle = .fullScreen
+                                
+                                reviewPurchaseVC.pokemonName = thePokemonSuccessVars.pokemonName
+                                reviewPurchaseVC.pokemonPrice = thePokemonSuccessVars.pokemonPrice
+                                reviewPurchaseVC.remainingBalance = thePokemonSuccessVars.remainingBalance
+                                
+   
+                                self?.present(reviewPurchaseVC, animated: true, completion: nil)
+                            }
+                            
+                        } else {
+                            
+                            if let theMyError = myError {
+                     
+                                if let theErrMsg = theMyError.translatedErrMsg {
+                                    
+                                    if let theErrTitle = theMyError.errTitle {
+                                        
+                                        self?.showErrorAlert(title: theErrTitle, msg: theErrMsg)
+                                    } else {
+                                        
+                                        self?.showErrorAlert(title: "", msg: theErrMsg)
+                                        
+                                    }
+                                }
+      
+                            } else {
+                                self?.showErrorAlert(title: "", msg: "Unknown fetch pokemon error")
+                            }
+                        }
+                        
+                    } // end DispatchQueue.main.async
+                    
+                }
+            }
         }
     }
-    
     
     // MARK: - Error msg
     
@@ -109,108 +167,6 @@ class ViewController: UIViewController {
         
     }
     
-    
-    // MARK: - Pokemon API call
-    
-    func fetchPokemonWith(_ trimmedPokemonNameOrId: String) {
-        
-        setUIState(isEnabled: false)
-        setSpinnerState(isVisible: true)
-        
-        let errMsgTitle = "Fetch Pokemon error"
-        let urlStr = kPokemonAPIUrl + "/\(trimmedPokemonNameOrId)"
-
-        if let url = URL(string: urlStr) {
-     
-            URLSession.shared.dataTask(with: url) { [weak self] data, response, err in
-                          
-                if let theData = data {
-                                        
-                    if err != nil {
-                        
-                        DispatchQueue.main.async {
-                            let errMsg = "\(String(describing: err))"
-                            self?.showErrorAlert(title: errMsgTitle, msg: errMsg)
-                        }
-                        return
-                    }
-                
-                    //if let jsonString = String(data: theData, encoding: .utf8) {
-                    //  print(jsonString)
-                    //}
-          
-                    if let responseData = try? JSONDecoder().decode(Pokemon.self, from: theData) {
-                        
-                        //print(responseData)
-                        
-                        if let pokemonName = responseData.name,
-                           let baseExperience = responseData.base_experience,
-                           let userBalance = self?.userRecord?.balance {
-                    
-                            let pokemonPrice = Double(baseExperience)/100.0 * 6.0 // 1% of base experience times 6
-                            
-                            let formattedPokemonPrice = String(format:"%.2f", pokemonPrice)
-                            
-                            if pokemonPrice > userBalance {
-                            
-                                DispatchQueue.main.async {
-                                    self?.showErrorAlert(title: "Insufficient funds", msg: "Pokemon '\(pokemonName)' price is $\(formattedPokemonPrice)")
-                                    self?.setSpinnerState(isVisible: false)
-                                    self?.setUIState(isEnabled: true)
-                                }
-        
-                                return
-                            }
-                          
-                            
-                            let remainingBalance = userBalance - pokemonPrice
-                            let formattedRemainingBalance = String(format:"%.2f", remainingBalance)
-                            
-                            DispatchQueue.main.async {
-                                
-                                let storyboard = UIStoryboard(name: "ReviewPurchase", bundle: nil)
-                                    
-                                if let reviewPurchaseVC = storyboard.instantiateViewController(withIdentifier: "reviewPurchaseVC") as? ReviewPurchaseViewController {
-                                    
-                                    reviewPurchaseVC.modalTransitionStyle = .crossDissolve
-                                    reviewPurchaseVC.modalPresentationStyle = .fullScreen
-                                    
-                                    reviewPurchaseVC.pokemonName = pokemonName
-                                    reviewPurchaseVC.pokemonPrice = formattedPokemonPrice
-                                    reviewPurchaseVC.remainingBalance = formattedRemainingBalance
-                                    
-                                    self?.setSpinnerState(isVisible: false)
-                                    self?.setUIState(isEnabled: true)
-                                    
-                                    self?.present(reviewPurchaseVC, animated: true, completion: nil)
-                            
-                                }
-                            
-                            }
-                            
-                        } else {
-                            DispatchQueue.main.async {
-                                self?.showErrorAlert(title: "", msg: "Pokemon data is nil.")
-                            }
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            self?.showErrorAlert(title: "", msg: "Pokemon not found.")
-                        }
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        self?.showErrorAlert(title: errMsgTitle, msg: "Response data is nil. Check internet connection.")
-                    }
-                }
-            }.resume()
-            
-        } else {
-            self.showErrorAlert(title: errMsgTitle, msg: "Bad url.")
-    
-        }
-
-    }
     
 }
 

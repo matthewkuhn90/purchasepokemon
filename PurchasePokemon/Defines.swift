@@ -6,3 +6,10 @@
 //
 
 let kCornerRadius = 8.0 // UI view corner radius
+
+
+struct MyError: Error {
+    var translatedErrMsg: String?
+    var errTitle: String?
+}
+

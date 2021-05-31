@@ -5,164 +5,114 @@
 //  Created by Matt Kuhn on 5/18/21.
 //
 
+import UIKit
+
+struct PokemonFetchSuccesValues {
+    var pokemonName: String?
+    var pokemonPrice: String?
+    var remainingBalance: String?
+}
+
+typealias pokeMonFetchCompletionCallback = (PokemonFetchSuccesValues?, MyError?) -> Void
+
 let kBasePokemonAPIUrl = "https://pokeapi.co/api/v2/"
 let kPokemonAPIUrl = kBasePokemonAPIUrl + "pokemon"
 
-// https://pokeapi.co/api/v2/pokemon/{id or name}/
-struct Pokemon: Codable {
+
+struct RestPokemon: Codable {
     
     var id: Int?
     var name: String?
     var base_experience: Int?
     
-    // the remaining api response JSON parameters can be inserted here...
+    // ...
+    
+    // https://pokeapi.co/api/v2/pokemon/{id or name}
+    
 }
 
-/*
-{
-  "id": 12,
-  "name": "butterfree",
-  "base_experience": 178,
-  "height": 11,
-  "is_default": true,
-  "order": 16,
-  "weight": 320,
-  "abilities": [
-    {
-      "is_hidden": true,
-      "slot": 3,
-      "ability": {
-        "name": "tinted-lens",
-        "url": "https://pokeapi.co/api/v2/ability/110/"
-      }
+class PokemonAPI {
+    
+    static func getMyError(title: String,
+                           msg: String) -> MyError {
+        let errMsg = msg
+        let myError = MyError.init(translatedErrMsg: errMsg, errTitle: (title == "") ? nil : title)
+        return myError
     }
-  ],
-  "forms": [
-    {
-      "name": "butterfree",
-      "url": "https://pokeapi.co/api/v2/pokemon-form/12/"
-    }
-  ],
-  "game_indices": [
-    {
-      "game_index": 12,
-      "version": {
-        "name": "white-2",
-        "url": "https://pokeapi.co/api/v2/version/22/"
-      }
-    }
-  ],
-  "held_items": [
-    {
-      "item": {
-        "name": "silver-powder",
-        "url": "https://pokeapi.co/api/v2/item/199/"
-      },
-      "version_details": [
-        {
-          "rarity": 5,
-          "version": {
-            "name": "y",
-            "url": "https://pokeapi.co/api/v2/version/24/"
-          }
-        }
-      ]
-    }
-  ],
-  "location_area_encounters": "https://pokeapi.co/api/v2/pokemon/12/encounters",
-  "moves": [
-    {
-      "move": {
-        "name": "flash",
-        "url": "https://pokeapi.co/api/v2/move/148/"
-      },
-      "version_group_details": [
-        {
-          "level_learned_at": 0,
-          "version_group": {
-            "name": "x-y",
-            "url": "https://pokeapi.co/api/v2/version-group/15/"
-          },
-          "move_learn_method": {
-            "name": "machine",
-            "url": "https://pokeapi.co/api/v2/move-learn-method/4/"
-          }
-        }
-      ]
-    }
-  ],
-  "species": {
-    "name": "butterfree",
-    "url": "https://pokeapi.co/api/v2/pokemon-species/12/"
-  },
-  "sprites": {
-    "back_female": "http://pokeapi.co/media/sprites/pokemon/back/female/12.png",
-    "back_shiny_female": "http://pokeapi.co/media/sprites/pokemon/back/shiny/female/12.png",
-    "back_default": "http://pokeapi.co/media/sprites/pokemon/back/12.png",
-    "front_female": "http://pokeapi.co/media/sprites/pokemon/female/12.png",
-    "front_shiny_female": "http://pokeapi.co/media/sprites/pokemon/shiny/female/12.png",
-    "back_shiny": "http://pokeapi.co/media/sprites/pokemon/back/shiny/12.png",
-    "front_default": "http://pokeapi.co/media/sprites/pokemon/12.png",
-    "front_shiny": "http://pokeapi.co/media/sprites/pokemon/shiny/12.png",
-    "other": {
-      "dream_world": {},
-      "official-artwork": {}
-    },
-    "versions": {
-      "generation-i": {
-        "red-blue": {},
-        "yellow": {}
-      },
-      "generation-ii": {
-        "crystal": {},
-        "gold": {},
-        "silver": {}
-      },
-      "generation-iii": {
-        "emerald": {},
-        "firered-leafgreen": {},
-        "ruby-sapphire": {}
-      },
-      "generation-iv": {
-        "diamond-pearl": {},
-        "heartgold-soulsilver": {},
-        "platinum": {}
-      },
-      "generation-v": {
-        "black-white": {}
-      },
-      "generation-vi": {
-        "omegaruby-alphasapphire": {},
-        "x-y": {}
-      },
-      "generation-vii": {
-        "icons": {},
-        "ultra-sun-ultra-moon": {}
-      },
-      "generation-viii": {
-        "icons": {}
-      }
-    }
-  },
-  "stats": [
-    {
-      "base_stat": 70,
-      "effort": 0,
-      "stat": {
-        "name": "speed",
-        "url": "https://pokeapi.co/api/v2/stat/6/"
-      }
-    }
-  ],
-  "types": [
-    {
-      "slot": 2,
-      "type": {
-        "name": "flying",
-        "url": "https://pokeapi.co/api/v2/type/3/"
-      }
-    }
-  ]
-}
+    
+    func fetchPokemonWithNameOrId(_ trimmedPokemonNameOrId: String,
+                                  currentBalance: Double,
+                                  completion: @escaping pokeMonFetchCompletionCallback ) {
+        
+        let urlStr = kPokemonAPIUrl + "/\(trimmedPokemonNameOrId)"
+
+        if let url = URL(string: urlStr) {
+     
+            URLSession.shared.dataTask(with: url) { [weak self] data, response, err in
+                          
+                if let theData = data {
+                                        
+                    if err != nil {
+
+                        completion(nil, PokemonAPI.getMyError(title: "", msg: "\(String(describing: err))"))
+                    }
+                
+                    //if let jsonString = String(data: theData, encoding: .utf8) {
+                    //  print(jsonString)
+                    //}
+          
+                    if let responseData = try? JSONDecoder().decode(RestPokemon.self, from: theData) {
+
+                        if let pokemonName = responseData.name,
+                           let baseExperience = responseData.base_experience {
+                           
+                            let userBalance = currentBalance
+                    
+                            let pokemonPrice = Double(baseExperience)/100.0 * 6.0 // 1% of base experience times 6
+                            
+                            let formattedPokemonPrice = String(format:"%.2f", pokemonPrice)
+                            
+                            if pokemonPrice > userBalance {
+                            
+                                completion(nil, PokemonAPI.getMyError(title: "Insufficient funds", msg: "Pokemon '\(pokemonName)' price is $\(formattedPokemonPrice)"))
+        
+                                return
+                            }
+                          
+                            
+                            let remainingBalance = userBalance - pokemonPrice
+                            let formattedRemainingBalance = String(format:"%.2f", remainingBalance)
+                            
+                            let pokemonSuccessVars = PokemonFetchSuccesValues.init(pokemonName: pokemonName,
+                                    pokemonPrice: formattedPokemonPrice,
+                                    remainingBalance: formattedRemainingBalance)
  
-*/
+                            // Success
+                            completion(pokemonSuccessVars, nil)
+                            //
+     
+                        } else {
+                            
+                            completion(nil,  PokemonAPI.getMyError(title: "", msg: "Pokemon data is nil."))
+                        }
+                    } else {
+                    
+                        completion(nil,  PokemonAPI.getMyError(title: "", msg: "Pokemon not found."))
+                        
+                    }
+                } else {
+                  
+                    completion(nil,  PokemonAPI.getMyError(title: "Pokemon fetch error", msg: "Response data is nil. Check internet connection."))
+                }
+            }.resume()
+            
+        } else {
+           
+            completion(nil,  PokemonAPI.getMyError(title: "Pokemon fetch error", msg: "Bad url."))
+            
+        }
+
+    }
+ 
+}
+
